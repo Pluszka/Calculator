@@ -4,7 +4,7 @@ char=['7', '8', '9', '/', '\u21BA', 'C', '4', '5', '6', '*', '(', ')', '1', '2',
 
 def start():
     root = tkinter.Tk()
-    root.geometry("480x440")
+    root.geometry("510x440")
     root.config(bg='#333333')
     root.title('Calc'.center(90))  # nazwa okienka wyświetlana u góry
     return root
@@ -33,7 +33,7 @@ def buttons():
     for i in range(len(button)):
         if i%6==0:
             r+=1
-        margin = 5 if len(char[1]) == 1 else 1
+        margin = 15 if len(char[i]) == 1 else 10
         button[i].grid(row= r, column=i%6,ipady=5, ipadx=margin)
     return button
 
