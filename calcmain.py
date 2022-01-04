@@ -12,7 +12,7 @@ def start():
 
 
 def screen():
-    scr = [tkinter.Label(root, width=70,fg=LightC, bg=DarkC, text="test", anchor='w', borderwidth=15) for i in range(3)]
+    scr = [tkinter.Label(root, width=70,fg=LightC, bg=DarkC, anchor='w', borderwidth=15) for i in range(3)]
     for i in range(len(scr)):
         scr[i].grid(row=i, columnspan=6, ipady=5, ipadx=1)
     return scr
@@ -21,7 +21,7 @@ def input():
     area=tkinter.Entry(root, bg=LightC, fg=DarkC, borderwidth=0, highlightcolor='#333333', highlightbackground='#333333')
     area.grid(row=len(scr), columnspan=6, ipady=10, ipadx=200)
 
-    info = tkinter.Label(root, width=70, bg=DarkC, fg=LightC, text="test", anchor='w', borderwidth=15)
+    info = tkinter.Label(root, width=70, bg=DarkC, fg=LightC, anchor='w', borderwidth=15)
     info.grid(row=len(scr)+1, columnspan=6, ipady=5, ipadx=1)
 
     return area, info
@@ -41,11 +41,38 @@ def click(char):
             else:
                 dataarea.insert(tkinter.END, char)
 
-
-
     return f
 
+def calculate():
 
+    def lastchar(line):
+        i=1
+        while line[-i]==')':
+            i+=1
+        return line[-i].isdigit()
+
+    def toomuchop(line):
+        for i in range(len(line)):
+            if not line[i].isdigit() and not line[i+1].isdigit():
+                return True
+        return False
+
+    def f():
+        txt=dataarea.get()
+
+        if not lastchar(txt) or toomuchop(txt):
+            info['text']='Niepoprawnie zformuowane wyrażenie'
+        else:
+            for i in range(1, len(scr)):
+                if scr[i]['text']:
+                    scr[i-1]['text']=scr[i]['text']
+            if '^' in txt:
+                txtnew=txt.replace('^','**')
+                scr[-1]['text']=txt + '=' + str(eval(txtnew))
+            else:
+                scr[-1]['text'] = txt + '=' + str(eval(txt))
+
+    return f
 
 def buttons():
     button= [tkinter.Button(root, borderwidth=0, text=x, width=5, bg=DarkC, fg=LightC) for x in char]
@@ -61,6 +88,7 @@ def buttons():
 
     equal=tkinter.Button(root, borderwidth=0, text='=', width=5, bg=LightC, fg=DarkC)
     equal.grid(row=len(scr)+6, columnspan=2, column=4,ipady=5, ipadx=40 )
+    equal.config(command=calculate())
 
     return button, equal
 
