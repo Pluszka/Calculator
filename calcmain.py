@@ -1,4 +1,5 @@
 import tkinter
+from math import sqrt
 
 char=['7', '8', '9', '/', '\u21BA', 'C', '4', '5', '6', '*', '(', ')', '1', '2', '3', '-', 'x^2', '\u221A', '0',',', '%', '+']
 DarkC ='#333333'
@@ -6,8 +7,9 @@ LightC = '#9EBD6E'
 def start():
     root = tkinter.Tk()
     root.geometry("525x420")
+    root.resizable(False, False)
     root.config(bg=DarkC)
-    root.title('Calc'.center(100))  # nazwa okienka wyświetlana u góry
+    root.title('Calc'.center(120))  # nazwa okienka wyświetlana u góry
     return root
 
 
@@ -63,12 +65,24 @@ def calculate():
         if not lastchar(txt) or toomuchop(txt):
             info['text']='Niepoprawnie zformuowane wyrażenie'
         else:
+            info.config(text='')
             for i in range(1, len(scr)):
                 if scr[i]['text']:
                     scr[i-1]['text']=scr[i]['text']
-            if '^' in txt:
+            if '^' in txt and '\u221A' in txt:
+                place = txt.index('\u221A') + 1
+                ntxt = txt.replace(txt[place], '')
+                txtnew = ntxt.replace('\u221A', 'sqrt(int(txt[place]))')
+                txtnew = txtnew.replace('^', '**')
+                scr[-1]['text'] = txt + '=' + str(eval(txtnew))
+            elif '^' in txt:
                 txtnew=txt.replace('^','**')
                 scr[-1]['text']=txt + '=' + str(eval(txtnew))
+            elif '\u221A' in txt:
+                place = txt.index('\u221A') + 1
+                ntxt = txt.replace(txt[place], '')
+                txtnew= ntxt.replace('\u221A', 'sqrt(int(txt[place]))')
+                scr[-1]['text'] = txt + '=' + str(eval(txtnew))
             else:
                 scr[-1]['text'] = txt + '=' + str(eval(txt))
 
